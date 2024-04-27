@@ -11,6 +11,7 @@ matrix ZeroMatrix(order *o) {
 	int* arr = malloc(*r * *c * sizeof(int));
 	if (arr == NULL) {
 		printf("Could not allocate memory for matrix\n");
+		return NullMatrix();
 	}
 	for (int i=0; i<(*r * *c); i++) {
 		arr[i] = 0;
@@ -28,6 +29,7 @@ matrix IdentityMatrix(order *o) {
 	int* arr = malloc(*r * *c * sizeof(int));
 	if (arr == NULL) {
 		printf("Could not allocate memory for matrix\n");
+		return NullMatrix();
 	}
 	for (int i=0; i < *r; i++) {
 		for (int j=0; j < *c; j++) {
@@ -73,13 +75,18 @@ matrix matrixMult(matrix * m1, matrix * m2) {
 	u64 *c1 = &(m1->order.c);
 	u64 *r2 = &(m2->order.r);
 	u64 *c2 = &(m2->order.c);
-	if (*c1 != *r2)
+	if (*c1 != *r2) {
 		printf("Matrices cannot be multiplied\n");
+		printf("Dimensional compatibility error\n");
+		return NullMatrix();
+	}
 	order o3 = {*r1, *c2};
 	order *op = &o3;
 	int* arr = malloc(o3.r * o3.c * sizeof(int));
-	if (arr == NULL)
+	if (arr == NULL) {
 		printf("Could not allocate memory for matrix\n");
+		return NullMatrix();
+	}
 	for (int i=0; i < *r1; i++) {
 		for (int j=0; j < *c2; j++) {
 			arr[i * o3.c + j] = 0;	
@@ -100,6 +107,7 @@ matrix CustomMatrix(int* arr, order *o) {
 	int* marr = malloc(*r * *c * sizeof(int));
 	if (marr == NULL) {
 		printf("Could not allocate memory for matrix\n");
+		return NullMatrix();
 	}
 	for (int i=0; i<(*r * *c); i++) {
 		marr[i] = arr[i];
@@ -110,11 +118,32 @@ matrix CustomMatrix(int* arr, order *o) {
 	m.order = *o;
 	return m;
 }
-int main(int argc, char* argv[]) {
 
-	matrix m1 = IdentityMatrix(&(order){3, 3});
-	displayMatrix(&m1);
-	
+matrix NullMatrix() {
+	int *arr = NULL;
+	order o = {-1, -1};
+	matrix m;
+	m.arr = arr;
+	m.order = o;
+	return m;
+}
+
+bool isNullMatrix(matrix* m) {
+	if (m->arr == NULL && m->order.r == -1 && m->order.c == -1)
+		return true;
+	else
+		return false;
+}
+int main(int argc, char* argv[]) {
+	matrix m1 = IdentityMatrix(&(order){3, 4});
+	matrix m2 = IdentityMatrix(&(order){5, 3});
+	matrix res = matrixMult(&m1, &m2);
+	if (isNullMatrix(&res)) {
+		printf("An error occured! Read the above log\n");
+	}
+
 	free(m1.arr);
+	free(m2.arr);
+	free(res.arr);
 	return 0;
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 #include <stdint.h>
 
 typedef uint64_t u64;
@@ -26,3 +27,7 @@ matrix matrixMult(matrix *, matrix *);
 void displayMatrix(matrix *);
 
 matrix CustomMatrix(int *, order *);
+
+matrix NullMatrix();
+
+bool isNullMatrix(matrix *);
