@@ -13,9 +13,9 @@ typedef struct {
   order order;
 } matrix;
 
-matrix createZeroMatrix(order *);
+matrix ZeroMatrix(order *);
 
-matrix createIdentityMatrix(order *);
+matrix IdentityMatrix(order *);
 
 int size(matrix *);
 

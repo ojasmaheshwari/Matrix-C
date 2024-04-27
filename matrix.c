@@ -5,7 +5,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-matrix createZeroMatrix(order *o) {
+matrix ZeroMatrix(order *o) {
 	u64 *r = &(o->r);
 	u64 *c = &(o->c);
 	int* arr = malloc(*r * *c * sizeof(int));
@@ -22,15 +22,19 @@ matrix createZeroMatrix(order *o) {
 	return m;
 }
 
-matrix createIdentityMatrix(order *o) {
+matrix IdentityMatrix(order *o) {
 	u64 *r = &(o->r);
 	u64 *c = &(o->c);
 	int* arr = malloc(*r * *c * sizeof(int));
 	if (arr == NULL) {
 		printf("Could not allocate memory for matrix\n");
 	}
-	for (int i=0; i<(*r * *c); i++) {
-		arr[i] = 1;
+	for (int i=0; i < *r; i++) {
+		for (int j=0; j < *c; j++) {
+			if ( i == j  ) {
+				arr[i * *c + j] = 1;
+			}
+		}
 	}
 	matrix m;
 	m.arr = arr;
@@ -107,31 +111,10 @@ matrix CustomMatrix(int* arr, order *o) {
 	return m;
 }
 int main(int argc, char* argv[]) {
-	int A_arr[] = {
-		2, 7, 3,
-		1, 5, 8,
-		0, 4, 1
-	};
-	int B_arr[] = {
-		3, 0, 1,
-		2, 1, 0,
-		1, 2, 4
-	};
-	// Multiplying two 3x3 matrices
-	matrix A = CustomMatrix(A_arr, &(order){3, 3});
-	matrix B = CustomMatrix(B_arr, &(order){3, 3});
+
+	matrix m1 = IdentityMatrix(&(order){3, 3});
+	displayMatrix(&m1);
 	
-	printf("Multiplying \n");
-	displayMatrix(&A);
-	printf("by \n");
-	displayMatrix(&B);
-	printf("Gives \n");
-
-	matrix AB = matrixMult(&A, &B);
-	displayMatrix(&AB);
-
-	free(A.arr);
-	free(B.arr);
-	free(AB.arr);
+	free(m1.arr);
 	return 0;
 }
